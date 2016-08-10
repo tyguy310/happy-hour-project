@@ -49,7 +49,7 @@ function getMenu (x) {
 
 function getIPLonLat () {
   return new Promise(function(resolve,reject) {
-    $.getJSON('http://ipinfo.io', function(data){
+    $.getJSON('https://ipinfo.io', function(data){
       ll = data.loc.split(',').map(Number);
       // console.log(lonLat);
       resolve(lonLat = ll[0] + ',' + ll[1]);
