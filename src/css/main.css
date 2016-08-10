@@ -1,0 +1,32 @@
+/* add custom styles */
+body  {
+
+}
+.page-header {
+  background-color: #2d5be3;
+  color: white;
+  margin-top: -20px;
+}
+
+h1 small {
+  color: silver;
+}
+
+.navbar {
+  background-color: #204dcc;
+  color: white;
+  margin-bottom: 0;
+}
+
+.btn {
+  margin: 10px;
+}
+
+.menu {
+  min-height: 400px;
+  background-color: silver;
+}
+
+li  {
+  text-decoration: none;
+}
