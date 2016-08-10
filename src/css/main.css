@@ -26,6 +26,14 @@ h1 small {
   min-height: 400px;
   background-color: silver;
 }
+.left {
+  min-height: 400px;
+  background-color: #2d5be3;
+}
+.right {
+  min-height: 400px;
+  background-color: #2d5be3;
+}
 
 li  {
   text-decoration: none;
