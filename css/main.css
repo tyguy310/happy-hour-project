@@ -1,6 +1,6 @@
 /* add custom styles */
 body  {
-
+background-color: white;
 }
 .page-header {
   background-color: #2d5be3;
@@ -33,4 +33,13 @@ h1 small {
 .right {
   min-height: 400px;
   background-color: #2d5be3;
+}
+.restInfo {
+  color: white;
+  background-color: #204dcc;
+}
+.map {
+  color: white;
+  background-color: #204dcc;
+  padding-bottom: .5rem;
 }
