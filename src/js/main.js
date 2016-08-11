@@ -106,6 +106,17 @@ function nonHHMenuCreator(menu){
       menu.forEach(menuDisplay);
   };
 }
+
+// function initialize(lat, long) {
+//   var mapProp = {
+//     center:new google.maps.LatLng(lat,long),
+//     zoom:16,
+//     mapTypeId:google.maps.MapTypeId.ROADMAP
+//   };
+//   var map = new google.maps.Map(document.getElementById('googleMap'),mapProp);
+// }
+// initialize(lat, long);
+
 var randomHHMenu;
 var hHmenuarray = [];
 // console.log(restArrayWithHHMenu);
@@ -140,6 +151,8 @@ var hHmenuarray = [];
 
   $('#next').on('click', function () {
     $('.menu').html('');
+    $('.restInfo').hide();
+    $('.map').hide();
     // console.log(hHmenuarray);
     if (hHmenuarray.length === 0) {
       $('#findOwn').show()
