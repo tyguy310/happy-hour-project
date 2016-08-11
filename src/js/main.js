@@ -2,8 +2,11 @@
 $(document).on('ready', function() {
   console.log('sanity check!');
 
+  $('#findOwn').hide();
+  $('.map').hide();
+  $('.restInfo').hide();
 });
-function getRandomHHMenu (min, max) {
+function getRandomMenu (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;
@@ -16,6 +19,7 @@ function getMenu (x) {
       method: 'GET'
     }).done(function(menu) {
       // console.log(menu);
+      // console.log(restIDArray[x]);
       resolve(menu.response.menu.menus);
     });
   })
@@ -24,7 +28,7 @@ function getMenu (x) {
 var lonLat;
 function getIPLonLat () {
   return new Promise(function(resolve,reject) {
-    $.getJSON('https://ipinfo.io/', function(data){
+    $.getJSON('http://ipinfo.io/', function(data){
       ll = data.loc.split(',').map(Number);
       resolve(lonLat = ll[0] + ',' + ll[1]);
     });
@@ -92,6 +96,16 @@ function menuCreator(menu){
     };
   };
 }
+function nonHHMenuCreator(menu){
+  var MENUTYPEARRAY = menu.items;
+  for (let i = 0; i < MENUTYPEARRAY.length; i++) { //possibly a forEach loop here?
+
+      $('.menu').append('<p>' + MENUTYPEARRAY[i].description + '</p>');
+
+      var menu = MENUTYPEARRAY[i].entries.items;
+      menu.forEach(menuDisplay);
+  };
+}
 var randomHHMenu;
 var hHmenuarray = [];
 // console.log(restArrayWithHHMenu);
@@ -113,11 +127,9 @@ var hHmenuarray = [];
           promiseGroup.push(getMenu(i));
         };
         Promise.all(promiseGroup).then(function(group){
-          // group.forEach(logItems);
+          allMenus = group;
           hHmenuarray = group.filter(filterforHHMenu);
-          // console.log(hHmenuarray);
-          randomHHMenu = hHmenuarray[getRandomHHMenu(0,hHmenuarray.length)]
-          console.log(randomHHMenu);
+          randomHHMenu = hHmenuarray[getRandomMenu(0,hHmenuarray.length)]
           menuCreator(randomHHMenu);
 
         })
@@ -129,17 +141,34 @@ var hHmenuarray = [];
   $('#next').on('click', function () {
     $('.menu').html('');
     // console.log(hHmenuarray);
-    menuCreator(hHmenuarray.pop());
+    if (hHmenuarray.length === 0) {
+      $('#findOwn').show()
+    } else {
+      menuCreator(hHmenuarray.pop());
+    }
   })
 
   $('#takeMe').on('click', function () {
-    RESTARRAY = results.response.groups[0].items;
-    RESTARRAYWITHMENU = RESTARRAY.filter(filterForMenu);
-   // console.log(RESTARRAYWITHMENU);
-   var restaurant = RESTARRAYWITHMENU[17].venue;
-   var restaurantID = restaurant.id;
-   console.log(restaurant);
-    restInfo(restaurant);
+  //   RESTARRAY = results.response.groups[0].items;
+  //   RESTARRAYWITHMENU = RESTARRAY.filter(filterForMenu);
+  //  // console.log(RESTARRAYWITHMENU);
+  //   var restaurant = RESTARRAYWITHMENU[17].venue;
+  //   var restaurantID = restaurant.id;
+  //   console.log(restaurant);
+  //   restInfo(restaurant);
+    $('.map').show();
+    $('.restInfo').show();
+
+  })
+var allMenus = [];
+var allFilteredMenus =[];
+var randomMenu;
+  $('#findOwn').on('click', function () {
+    $('.menu').html('');
+
+    allFilteredMenus = allMenus.filter(filterforMenuCount);
+    randomMenu = allFilteredMenus[getRandomMenu(0,allFilteredMenus.length)];
+    nonHHMenuCreator(randomMenu);
   })
 
   //
