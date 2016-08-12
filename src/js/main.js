@@ -1,4 +1,8 @@
 // add scripts
+
+// google maps api key AIzaSyBK6ivHNatWs_qAUJcKEPfwW5vheWvk8_E
+
+
 $(document).on('ready', function() {
   console.log('sanity check!');
 
@@ -6,6 +10,7 @@ $(document).on('ready', function() {
   $('.map').hide();
   $('.restInfo').hide();
 });
+
 function getRandomMenu (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -13,16 +18,13 @@ function getRandomMenu (min, max) {
 }
 
 function getMenu (x) {
-  return new Promise(function(resolve,reject) {
+  // return new Promise(function(resolve,reject) {
+  return Promise.resolve(
     $.ajax({
-      url:'https://api.foursquare.com/v2/venues/' + restIDArray[x] + '/menu?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160809',
+      url:'https://api.foursquare.com/v2/venues/' + restInfoArray[x].id + '/menu?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160809',
       method: 'GET'
-    }).done(function(menu) {
-      // console.log(menu);
-      // console.log(restIDArray[x]);
-      resolve(menu.response.menu.menus);
-    });
-  })
+    })
+  );
 }
 
 var lonLat;
@@ -33,12 +35,6 @@ function getIPLonLat () {
       resolve(lonLat = ll[0] + ',' + ll[1]);
     });
   });
-}
-
-var restIDArray = [];
-function makeRestIDArray (el) {
-  restIDArray.push(el.venue.id); //"el" could be more specific
-  return restIDArray;
 }
 
 function filterForMenu (el) {
@@ -60,12 +56,21 @@ function menuDisplay (item) {
 };
 
 function filterforMenuCount (el) {
-  if (el.count !== 0) {
+  // console.log(el);
+  if (el.somethingElse.count !== 0) {
      return true;
   }
 }
+
+function secondFilterforMenuCount (el) {
+  // console.log(el);
+  if (el.somethingElse.count !== 0) {
+     return true;
+  }
+}
+
 function filterforHHMenu (el) {
-  var typeArray = el.items;
+  var typeArray = el.somethingElse.items;
   if (typeArray !== undefined) {
     for (var i = 0; i < typeArray.length; i++) {
       if(typeArray[i].name === 'Happy Hour' || typeArray[i].name === 'Happy Hour Menu') {
@@ -75,17 +80,19 @@ function filterforHHMenu (el) {
   }
 }
 
-function restInfo (restaurant) {
+function appendRestInfo (restaurant) {
+  // var venue =
   var restaurantUrl = restaurant.url.replace(/^https?:\/\//,'');
   var restaurantLink = '<a href ="' + restaurant.url + '">' + restaurantUrl + '</a>';
 
-  $('.left').append('<p>' + restaurant.name + '</p>');
-  $('.left').append(restaurantLink);
-  $('.left').append('<p>' + restaurant.hours.status + '</p>');
+  $('.restInfo').append('<p>' + restaurant.name + '</p>');
+  $('.restInfo').append(restaurantLink);
+  $('.restInfo').append('<p>' + restaurant.hours.status + '</p>');
 }
 
 function menuCreator(menu){
-  var MENUTYPEARRAY = menu.items;
+  var MENUTYPEARRAY = menu.somethingElse.items;
+  // console.log(MENUTYPEARRAY);
   for (let i = 0; i < MENUTYPEARRAY.length; i++) { //possibly a forEach loop here?
     if (MENUTYPEARRAY[i].name === 'Happy Hour Menu' || MENUTYPEARRAY[i].name === 'Happy Hour') {
 
@@ -96,8 +103,9 @@ function menuCreator(menu){
     };
   };
 }
+
 function nonHHMenuCreator(menu){
-  var MENUTYPEARRAY = menu.items;
+  var MENUTYPEARRAY = menu.somethingElse.items;
   for (let i = 0; i < MENUTYPEARRAY.length; i++) { //possibly a forEach loop here?
 
       $('.menu').append('<p>' + MENUTYPEARRAY[i].description + '</p>');
@@ -107,16 +115,30 @@ function nonHHMenuCreator(menu){
   };
 }
 
-// function initialize(lat, long) {
-//   var mapProp = {
-//     center:new google.maps.LatLng(lat,long),
-//     zoom:16,
-//     mapTypeId:google.maps.MapTypeId.ROADMAP
-//   };
-//   var map = new google.maps.Map(document.getElementById('googleMap'),mapProp);
-// }
-// initialize(lat, long);
+function initialize() {
+  var mapProp = {
+    center:new google.maps.LatLng(39.73672566308672,-104.98462772334167),
+    zoom:16,
+    mapTypeId:google.maps.MapTypeId.ROADMAP
+  };
+  var map = new google.maps.Map(document.getElementById('googleMap'),mapProp);
+}
+// initialize(39.73672566308672,-104.98462772334167);
 
+var map;
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -34.397, lng: 150.644},
+    zoom: 8
+  });
+}
+
+var restInfoArray = [];
+function makeRestInfoArray (el) {
+  restInfoArray.push(el.venue); //"el" could be more specific
+  return restInfoArray;
+}
+var selectedMenu;
 var randomHHMenu;
 var hHmenuarray = [];
 // console.log(restArrayWithHHMenu);
@@ -128,26 +150,41 @@ var hHmenuarray = [];
         url:'https://api.foursquare.com/v2/venues/explore?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160808&section=food&sortByDistance=' + $('#closest').prop('checked') + '&openNow=' + $('#openNow').val() + '&limit=50&near=denver',
         method: 'GET'
       }).done(function(results){
+        // console.log(results);
         RESTARRAYWITHMENU = results.response.groups[0].items.filter(filterForMenu);
         // console.log(RESTARRAYWITHMENU);
-        RESTARRAYWITHMENU.forEach(makeRestIDArray);
-        // console.log(restIDArray);
+        RESTARRAYWITHMENU.forEach(makeRestInfoArray);
+        // console.log(restInfoArray);
       }).then(function() {
         var promiseGroup = [];
-        for (let i = 0; i < restIDArray.length; i++) {
+        for (let i = 0; i < restInfoArray.length; i++) {
           promiseGroup.push(getMenu(i));
         };
         Promise.all(promiseGroup).then(function(group){
-          allMenus = group;
-          hHmenuarray = group.filter(filterforHHMenu);
-          randomHHMenu = hHmenuarray[getRandomMenu(0,hHmenuarray.length)]
-          menuCreator(randomHHMenu);
+          var menus = group.map(function (menu) {
+            return menu.response.menu.menus;
+          });
 
+          restInfoArray.forEach(function (restaurant, index) {
+            restaurant.somethingElse = menus[index];
+          });
+          hHmenuarray = restInfoArray.filter(filterforHHMenu);
+          console.log(hHmenuarray);
+          selectMenuRetrieve(hHmenuarray)
+          // randomHHMenu = hHmenuarray[getRandomMenu(0,hHmenuarray.length)]
+          // console.log(selectedMenu);
+          menuCreator(selectedMenu);
+
+          // console.log(restInfoArray);
         })
       })
     })
-
   });
+
+  function selectMenuRetrieve (menuarray) {
+    selectedMenu = menuarray.pop()
+    return selectedMenu;
+  }
 
   $('#next').on('click', function () {
     $('.menu').html('');
@@ -157,47 +194,31 @@ var hHmenuarray = [];
     if (hHmenuarray.length === 0) {
       $('#findOwn').show()
     } else {
-      menuCreator(hHmenuarray.pop());
+      selectMenuRetrieve(hHmenuarray);
+      menuCreator(selectedMenu);
     }
   })
+  var allFilteredMenus = [];
 
   $('#takeMe').on('click', function () {
-  //   RESTARRAY = results.response.groups[0].items;
-  //   RESTARRAYWITHMENU = RESTARRAY.filter(filterForMenu);
-  //  // console.log(RESTARRAYWITHMENU);
-  //   var restaurant = RESTARRAYWITHMENU[17].venue;
-  //   var restaurantID = restaurant.id;
-  //   console.log(restaurant);
-  //   restInfo(restaurant);
+    $('.restInfo').html('');
+    $('.map').html('');
+    console.log(selectedMenu);
+    // console.log(restInfoArray.filter(secondFilterforMenuCount));
+    // console.log(allFilteredMenus);
+    appendRestInfo(selectedMenu);
     $('.map').show();
     $('.restInfo').show();
 
   })
-var allMenus = [];
-var allFilteredMenus =[];
+
+
 var randomMenu;
   $('#findOwn').on('click', function () {
     $('.menu').html('');
+    allFilteredMenus = restInfoArray.filter(filterforMenuCount);
 
-    allFilteredMenus = allMenus.filter(filterforMenuCount);
+    console.log(allFilteredMenus);
     randomMenu = allFilteredMenus[getRandomMenu(0,allFilteredMenus.length)];
     nonHHMenuCreator(randomMenu);
   })
-
-  //
-  // getIPLonLat().then(function(lonLat) {
-  // $.ajax({
-  //   url:'https://api.foursquare.com/v2/venues/explore?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160808&section=food&sortByDistance=' + $('#closest').prop('checked') + '&openNow=' + $('#openNow').val() + '&limit=50&ll=' + lonLat,
-  //   method: 'GET'
-  // }).done(function(results) {
-  //
-  //
-  //
-  //     $.ajax({
-  //       url:'https://api.foursquare.com/v2/venues/' + restaurantID + '/menu?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160809',
-  //       method: 'GET'
-  //     }).done(function(menu){
-  //       menuCreator(menu);
-  //     });
-  //   });
-  // });
