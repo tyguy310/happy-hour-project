@@ -43,3 +43,7 @@ h1 small {
   background-color: #204dcc;
   padding-bottom: .5rem;
 }
+
+#alert  {
+  display: none;
+}
