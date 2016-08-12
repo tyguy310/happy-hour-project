@@ -7,8 +7,9 @@ $(document).on('ready', function() {
   console.log('sanity check!');
 
   $('#findOwn').hide();
-  $('.map').hide();
   $('.restInfo').hide();
+  encodeURIName(restNameURI);
+  console.log(restNameURI);
 });
 
 function getRandomMenu (min, max) {
@@ -21,7 +22,7 @@ function getMenu (x) {
   // return new Promise(function(resolve,reject) {
   return Promise.resolve(
     $.ajax({
-      url:'https://api.foursquare.com/v2/venues/' + restInfoArray[x].id + '/menu?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160809',
+      url:'https://api.foursquare.com/v2/venues/' + restInfoArray[x].id + '/menu?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160812',
       method: 'GET'
     })
   );
@@ -96,7 +97,7 @@ function menuCreator(menu){
   for (let i = 0; i < MENUTYPEARRAY.length; i++) { //possibly a forEach loop here?
     if (MENUTYPEARRAY[i].name === 'Happy Hour Menu' || MENUTYPEARRAY[i].name === 'Happy Hour') {
 
-      $('.menu').append('<p>' + MENUTYPEARRAY[i].description + '</p>');
+      $('.menu').append('<h4 class="text-center">' + MENUTYPEARRAY[i].description + '</h4>');
 
       var menu = MENUTYPEARRAY[i].entries.items;
       menu.forEach(menuDisplay);
@@ -147,7 +148,7 @@ var hHmenuarray = [];
     getIPLonLat().then(function(lonLat) {
 
       $.ajax({
-        url:'https://api.foursquare.com/v2/venues/explore?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160808&section=food&sortByDistance=' + $('#closest').prop('checked') + '&openNow=' + $('#openNow').val() + '&limit=50&near=denver',
+        url:'https://api.foursquare.com/v2/venues/explore?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160812&section=food&sortByDistance=' + $('#closest').prop('checked') + '&openNow=' + $('#openNow').val() + '&limit=50&near=denver',
         method: 'GET'
       }).done(function(results){
         // console.log(results);
@@ -189,10 +190,11 @@ var hHmenuarray = [];
   $('#next').on('click', function () {
     $('.menu').html('');
     $('.restInfo').hide();
-    $('.map').hide();
+    $('#googleMap').html('');
     // console.log(hHmenuarray);
     if (hHmenuarray.length === 0) {
       $('#findOwn').show()
+      $('#alert').fadeIn(1000).delay(2000).fadeOut(1000);
     } else {
       selectMenuRetrieve(hHmenuarray);
       menuCreator(selectedMenu);
@@ -200,25 +202,40 @@ var hHmenuarray = [];
   })
   var allFilteredMenus = [];
 
+var restNameURI = 'denver';
+function encodeURIName (name) {
+  restNameURI = encodeURI(name);
+}
+
+function mapCreate (name) {
+  // $('#googleMap')
+}
+
+
   $('#takeMe').on('click', function () {
     $('.restInfo').html('');
-    $('.map').html('');
+    // $('.map').html('');
     console.log(selectedMenu);
-    // console.log(restInfoArray.filter(secondFilterforMenuCount));
-    // console.log(allFilteredMenus);
     appendRestInfo(selectedMenu);
-    $('.map').show();
-    $('.restInfo').show();
+    encodeURIName(selectedMenu.name)
 
+    // console.log(restNameURI);
+    $('.restInfo').show();
+    $('#googleMap').append('<iframe width="250" height="250" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/search?key=AIzaSyD3nHjd0_RGDNdjaWEqsfJpcNn7WD3osic&q=' + restNameURI + '"></iframe>')
+console.log(restNameURI);
   })
 
 
 var randomMenu;
   $('#findOwn').on('click', function () {
     $('.menu').html('');
+    $('.restInfo').html('');
+    $('#googleMap').html('');
+
     allFilteredMenus = restInfoArray.filter(filterforMenuCount);
 
-    console.log(allFilteredMenus);
+    // console.log(allFilteredMenus);
     randomMenu = allFilteredMenus[getRandomMenu(0,allFilteredMenus.length)];
-    nonHHMenuCreator(randomMenu);
+    selectedMenu = randomMenu
+    nonHHMenuCreator(selectedMenu);
   })
