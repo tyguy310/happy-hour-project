@@ -9,7 +9,7 @@ $(document).on('ready', function() {
   $('#findOwn').hide();
   $('.restInfo').hide();
   encodeURIName(restNameURI);
-  console.log(restNameURI);
+  // console.log(restNameURI);
 });
 
 function getRandomMenu (min, max) {
@@ -18,11 +18,11 @@ function getRandomMenu (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function getMenu (x) {
+function getMenu (venue) {
   // return new Promise(function(resolve,reject) {
   return Promise.resolve(
     $.ajax({
-      url:'https://api.foursquare.com/v2/venues/' + restInfoArray[x].id + '/menu?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160812',
+      url:'https://api.foursquare.com/v2/venues/' + restInfoArray[venue].id + '/menu?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160812',
       method: 'GET'
     })
   );
@@ -31,15 +31,17 @@ function getMenu (x) {
 var lonLat;
 function getIPLonLat () {
   return new Promise(function(resolve,reject) {
-    $.getJSON('https://ipinfo.io/', function(data){
-      ll = data.loc.split(',').map(Number);
-      resolve(lonLat = ll[0] + ',' + ll[1]);
-    });
+    // $.getJSON('http://ipinfo.io/', function(data){
+    //   ll = data.loc.split(',').map(Number);
+    var Longitude = 39.73;
+    var Latitude = -104.992;
+      resolve(lonLat = Longitude + ',' + Latitude);
+    // });
   });
 }
 
-function filterForMenu (el) {
-  if (el.venue.hasMenu === true) {
+function filterForMenu (restaurant) {
+  if (restaurant.venue.hasMenu === true) {
     return true;
   }
 }
@@ -56,22 +58,15 @@ function menuDisplay (item) {
   }
 };
 
-function filterforMenuCount (el) {
-  // console.log(el);
-  if (el.somethingElse.count !== 0) {
+function filterforMenuCount (venue) {
+  // console.log(venue);
+  if (venue.somethingElse.count !== 0) {
      return true;
   }
 }
 
-function secondFilterforMenuCount (el) {
-  // console.log(el);
-  if (el.somethingElse.count !== 0) {
-     return true;
-  }
-}
-
-function filterforHHMenu (el) {
-  var typeArray = el.somethingElse.items;
+function filterforHHMenu (venue) {
+  var typeArray = venue.somethingElse.items;
   if (typeArray !== undefined) {
     for (var i = 0; i < typeArray.length; i++) {
       if(typeArray[i].name === 'Happy Hour' || typeArray[i].name === 'Happy Hour Menu') {
@@ -82,7 +77,6 @@ function filterforHHMenu (el) {
 }
 
 function appendRestInfo (restaurant) {
-  // var venue =
   var restaurantUrl = restaurant.url.replace(/^https?:\/\//,'');
   var restaurantLink = '<a href ="' + restaurant.url + '">' + restaurantUrl + '</a>';
 
@@ -116,33 +110,14 @@ function nonHHMenuCreator(menu){
   };
 }
 
-function initialize() {
-  var mapProp = {
-    center:new google.maps.LatLng(39.73672566308672,-104.98462772334167),
-    zoom:16,
-    mapTypeId:google.maps.MapTypeId.ROADMAP
-  };
-  var map = new google.maps.Map(document.getElementById('googleMap'),mapProp);
-}
-// initialize(39.73672566308672,-104.98462772334167);
-
-var map;
-function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: -34.397, lng: 150.644},
-    zoom: 8
-  });
-}
-
 var restInfoArray = [];
-function makeRestInfoArray (el) {
-  restInfoArray.push(el.venue); //"el" could be more specific
+function makeRestInfoArray (restaurant) {
+  restInfoArray.push(restaurant.venue);
   return restInfoArray;
 }
 var selectedMenu;
 var randomHHMenu;
 var hHmenuarray = [];
-// console.log(restArrayWithHHMenu);
   $('#getHappy').on('click', function()  {
     $('.menu').html('');
     getIPLonLat().then(function(lonLat) {
@@ -172,11 +147,8 @@ var hHmenuarray = [];
           hHmenuarray = restInfoArray.filter(filterforHHMenu);
           console.log(hHmenuarray);
           selectMenuRetrieve(hHmenuarray)
-          // randomHHMenu = hHmenuarray[getRandomMenu(0,hHmenuarray.length)]
-          // console.log(selectedMenu);
-          menuCreator(selectedMenu);
 
-          // console.log(restInfoArray);
+          menuCreator(selectedMenu);
         })
       })
     })
@@ -207,11 +179,6 @@ function encodeURIName (name) {
   restNameURI = encodeURI(name);
 }
 
-function mapCreate (name) {
-  // $('#googleMap')
-}
-
-
   $('#takeMe').on('click', function () {
     $('.restInfo').html('');
     // $('.map').html('');
@@ -224,7 +191,6 @@ function mapCreate (name) {
     $('#googleMap').append('<iframe width="250" height="250" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/search?key=AIzaSyD3nHjd0_RGDNdjaWEqsfJpcNn7WD3osic&q=' + restNameURI + '"></iframe>')
 console.log(restNameURI);
   })
-
 
 var randomMenu;
   $('#findOwn').on('click', function () {
