@@ -120,6 +120,10 @@ var randomHHMenu;
 var hHmenuarray = [];
   $('#getHappy').on('click', function()  {
     $('.menu').html('');
+    $('#googleMap').html('');
+    $('.restInfo').html('');
+
+
     getIPLonLat().then(function(lonLat) {
 
       $.ajax({
@@ -181,7 +185,7 @@ function encodeURIName (name) {
 
   $('#takeMe').on('click', function () {
     $('.restInfo').html('');
-    // $('.map').html('');
+    $('#googleMap').html('');
     console.log(selectedMenu);
     appendRestInfo(selectedMenu);
     encodeURIName(selectedMenu.name)
