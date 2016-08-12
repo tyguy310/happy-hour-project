@@ -54,7 +54,16 @@ function menuDisplay (item) {
   // $('.menu').append('<ul>' + '</ul>');
   const ENTRIESARRAY = item.entries.items;
   for (let i = 0; i < ENTRIESARRAY.length; i++) {
-    $('.menu').append('<li>' + ENTRIESARRAY[i].price + ' - ' + ENTRIESARRAY[i].name + '<br>' + ENTRIESARRAY[i].description + '</li>')
+    if (ENTRIESARRAY[i].description !== undefined && ENTRIESARRAY[i].price !== undefined) {
+      $('.menu').append('<li>' + ENTRIESARRAY[i].price + ' - ' + ENTRIESARRAY[i].name + '<br>' + ENTRIESARRAY[i].description + '</li>')
+    } else if (ENTRIESARRAY[i].description !== undefined) {
+      $('.menu').append('<li>' + ENTRIESARRAY[i].name + '<br>' + ENTRIESARRAY[i].description + '</li>')
+    } else if (ENTRIESARRAY[i].price !== undefined) {
+      $('.menu').append('<li>' + ENTRIESARRAY[i].price + ' - ' + ENTRIESARRAY[i].name + '<br>' + '</li>')
+    } else {
+      $('.menu').append('<li>' + ENTRIESARRAY[i].name + '</li>')
+    }
+
   }
 };
 
@@ -122,6 +131,8 @@ var hHmenuarray = [];
     $('.menu').html('');
     $('#googleMap').html('');
     $('.restInfo').html('');
+    $('.next').removeClass('disabled')
+
 
 
     getIPLonLat().then(function(lonLat) {
@@ -156,6 +167,7 @@ var hHmenuarray = [];
         })
       })
     })
+
   });
 
   function selectMenuRetrieve (menuarray) {
@@ -201,6 +213,7 @@ var randomMenu;
     $('.menu').html('');
     $('.restInfo').html('');
     $('#googleMap').html('');
+    $('.next').addClass('disabled')
 
     allFilteredMenus = restInfoArray.filter(filterforMenuCount);
 
