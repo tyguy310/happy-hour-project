@@ -1,6 +1,6 @@
 // add scripts
 
-// google maps api key AIzaSyBK6ivHNatWs_qAUJcKEPfwW5vheWvk8_E
+// google maps api key AIzaSyD3nHjd0_RGDNdjaWEqsfJpcNn7WD3osic
 
 
 $(document).on('ready', function() {
@@ -31,7 +31,7 @@ function getMenu (x) {
 var lonLat;
 function getIPLonLat () {
   return new Promise(function(resolve,reject) {
-    $.getJSON('http://ipinfo.io/', function(data){
+    $.getJSON('https://ipinfo.io/', function(data){
       ll = data.loc.split(',').map(Number);
       resolve(lonLat = ll[0] + ',' + ll[1]);
     });
