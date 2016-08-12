@@ -45,11 +45,15 @@ h1 small {
 }
 
 a {
+  padding: 0 .5rem;
   background-color: silver;
-  border: 3px solid #2d5be3;
-  border-radius: 2px;
+  border: 1px solid #2d5be3;
+  border-radius: 5px;
 }
 
 #alert  {
   display: none;
+}
+img {
+  width: 250px;
 }
