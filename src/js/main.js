@@ -1,4 +1,3 @@
-// add scripts
 
 // google maps api key AIzaSyD3nHjd0_RGDNdjaWEqsfJpcNn7WD3osic
 
@@ -24,8 +23,8 @@ function getIPLonLat () {
 
     // $.getJSON('http://ipinfo.io/', function(data){
     //   ll = data.loc.split(',').map(Number);
-    var Longitude = 39.73;
-    var Latitude = -104.992;
+    const Longitude = 39.73;
+    const Latitude = -104.992;
     resolve(lonLat = Longitude + ',' + Latitude);
     // });
   });
@@ -37,6 +36,18 @@ function filterForMenu (restaurant) {
   }
 }
 
+function menuContentNormalize (entry) {
+  if (entry.description !== undefined && entry.price !== undefined) {
+    $('.menu').append('<li>' + entry.price + ' - ' + entry.name + '<br>' + entry.description + '</li>');
+  } else if (entry.description !== undefined) {
+    $('.menu').append('<li>' + entry.name + '<br>' + entry.description + '</li>');
+  } else if (entry.price !== undefined) {
+    $('.menu').append('<li>' + entry.price + ' - ' + entry.name + '<br>' + '</li>');
+  } else {
+    $('.menu').append('<li>' + entry.name + '</li>');
+  }
+}
+
 function menuDisplay (item) {
   $('.menu').append('<h4 class="name">' + item.name + '</h4>');
   if (item.description !== undefined) {
@@ -44,22 +55,12 @@ function menuDisplay (item) {
   }
   // $('.menu').append('<ul>' + '</ul>');
   const ENTRIESARRAY = item.entries.items;
-  for (let i = 0; i < ENTRIESARRAY.length; i++) {
-    if (ENTRIESARRAY[i].description !== undefined && ENTRIESARRAY[i].price !== undefined) {
-      $('.menu').append('<li>' + ENTRIESARRAY[i].price + ' - ' + ENTRIESARRAY[i].name + '<br>' + ENTRIESARRAY[i].description + '</li>');
-    } else if (ENTRIESARRAY[i].description !== undefined) {
-      $('.menu').append('<li>' + ENTRIESARRAY[i].name + '<br>' + ENTRIESARRAY[i].description + '</li>');
-    } else if (ENTRIESARRAY[i].price !== undefined) {
-      $('.menu').append('<li>' + ENTRIESARRAY[i].price + ' - ' + ENTRIESARRAY[i].name + '<br>' + '</li>');
-    } else {
-      $('.menu').append('<li>' + ENTRIESARRAY[i].name + '</li>');
-    }
 
-  }
+  ENTRIESARRAY.forEach(menuContentNormalize);
+
 }
 
 function filterforMenuCount (venue) {
-  // console.log(venue);
   if (venue.somethingElse.count !== 0) {
     return true;
   }
@@ -198,7 +199,7 @@ $('#takeMe').on('click', function () {
 
     $('.restInfo').show();
     $('#googleMap').append('<iframe width="250" height="250" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/search?key=AIzaSyD3nHjd0_RGDNdjaWEqsfJpcNn7WD3osic&q=' + restNameURI + '"></iframe>');
-    console.log(restNameURI);
+    // console.log(restNameURI);
   });
 
 var randomMenu;
