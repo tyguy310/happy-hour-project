@@ -2,7 +2,6 @@
 // google maps api key AIzaSyD3nHjd0_RGDNdjaWEqsfJpcNn7WD3osic
 
 $(document).on('ready', function() {
-  console.log('sanity check!');
 
   $('#findOwn').hide();
   $('.restInfo').hide();
@@ -111,6 +110,7 @@ function makeRestInfoArray (restaurant) {
   restInfoArray.push(restaurant.venue);
   return restInfoArray;
 }
+
 var selectedMenu;
 var randomHHMenu;
 var hHmenuarray = [];
@@ -152,7 +152,6 @@ $('#getHappy').on('click', function()  {
             restaurant.somethingElse = menus[index];
           });
           hHmenuarray = restInfoArray.filter(filterforHHMenu);
-          console.log(hHmenuarray);
           selectMenuRetrieve(hHmenuarray);
 
           menuCreator(selectedMenu);
@@ -189,7 +188,6 @@ function encodeURIName (name) {
 $('#takeMe').on('click', function () {
     $('.restInfo').html('');
     $('#googleMap').html('');
-    console.log(selectedMenu);
     appendRestInfo(selectedMenu);
     encodeURIName(selectedMenu.name);
 
