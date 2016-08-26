@@ -19,10 +19,6 @@ var lonLat;
 function getIPLonLat () {
   return new Promise(function(resolve,reject) {
 
-    // no ssl support from ipinfo.io. location is hardcoded in for presentation purposes.
-
-    // $.getJSON('http://ipinfo.io/', function(data){
-    //   ll = data.loc.split(',').map(Number);
     const Longitude = 39.73;
     const Latitude = -104.992;
     resolve(lonLat = Longitude + ',' + Latitude);
@@ -122,7 +118,7 @@ var hHmenuarray = [];
 function getMenu (venue) {
   return Promise.resolve(
     $.ajax({
-      url:'https://api.foursquare.com/v2/venues/' + restInfoArray[venue].id + '/menu?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160813',
+      url:'https://api.foursquare.com/v2/venues/' + restInfoArray[venue].id + '/menu?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160826',
       method: 'GET'
     })
   );
@@ -137,7 +133,7 @@ $('#getHappy').on('click', function()  {
     getIPLonLat().then(function(lonLat) {
 
       $.ajax({
-        url:'https://api.foursquare.com/v2/venues/explore?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160813&section=food&sortByDistance=' + $('#closest').prop('checked') + '&openNow=' + $('#openNow').val() + '&limit=50&near=denver',
+        url:'https://api.foursquare.com/v2/venues/explore?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160826&section=food&sortByDistance=' + $('#closest').prop('checked') + '&openNow=' + $('#openNow').val() + '&limit=50&near=denver',
         method: 'GET'
       }).done(function(results) {
         RESTARRAYWITHMENU = results.response.groups[0].items.filter(filterForMenu);
@@ -199,7 +195,6 @@ $('#takeMe').on('click', function () {
 
     $('.restInfo').show();
     $('#googleMap').append('<iframe width="250" height="250" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/search?key=AIzaSyD3nHjd0_RGDNdjaWEqsfJpcNn7WD3osic&q=' + restNameURI + '"></iframe>');
-    // console.log(restNameURI);
   });
 
 var randomMenu;
