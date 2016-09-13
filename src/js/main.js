@@ -1,6 +1,3 @@
-
-// google maps api key AIzaSyD3nHjd0_RGDNdjaWEqsfJpcNn7WD3osic
-
 $(document).on('ready', function() {
 
   $('#findOwn').hide();
@@ -21,7 +18,6 @@ function getIPLonLat () {
     const Longitude = 39.73;
     const Latitude = -104.992;
     resolve(lonLat = Longitude + ',' + Latitude);
-    // });
   });
 }
 
@@ -118,7 +114,7 @@ var hHmenuarray = [];
 function getMenu (venue) {
   return Promise.resolve(
     $.ajax({
-      url:'https://api.foursquare.com/v2/venues/' + restInfoArray[venue].id + '/menu?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160826',
+      url:'https://api.foursquare.com/v2/venues/' + restInfoArray[venue].id + '/menu?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160913',
       method: 'GET'
     })
   );
@@ -133,7 +129,7 @@ $('#getHappy').on('click', function()  {
     getIPLonLat().then(function(lonLat) {
 
       $.ajax({
-        url:'https://api.foursquare.com/v2/venues/explore?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160826&section=food&sortByDistance=' + $('#closest').prop('checked') + '&openNow=' + $('#openNow').val() + '&limit=50&near=denver',
+        url:'https://api.foursquare.com/v2/venues/explore?client_id=K451HYAEBJX0PR3DF3XDMGTCLRIMKBVRAJXIWEDQ5NY4Y0VZ&client_secret=KQCBRZBR3B2E3FQFGLZOYZHYFU5O5U5MNPIKY2GAQONINNPZ&v=20160913&section=food&sortByDistance=' + $('#closest').prop('checked') + '&openNow=' + $('#openNow').val() + '&limit=50&near=denver',
         method: 'GET'
       }).done(function(results) {
         RESTARRAYWITHMENU = results.response.groups[0].items.filter(filterForMenu);
